@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"xiaolinprivatenet.xyz","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="爬虫是一个有趣的工具，我通过爬虫的学习，接触了网络编程，也对python有了更好的了解。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="爬虫小练习--洛谷题库爬取">
+<meta property="og:url" content="http://xiaolinprivatenet.xyz/2022/06/04/%E7%88%AC%E8%99%AB%E5%B0%8F%E7%BB%83%E4%B9%A0-%E6%B4%9B%E8%B0%B7%E9%A2%98%E5%BA%93%E7%88%AC%E5%8F%96/index.html">
+<meta property="og:site_name" content="Lin&#39;s Blog">
+<meta property="og:description" content="爬虫是一个有趣的工具，我通过爬虫的学习，接触了网络编程，也对python有了更好的了解。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-06-04T07:01:25.000Z">
+<meta property="article:modified_time" content="2022-06-04T10:31:10.349Z">
+<meta property="article:tag" content="python">
+<meta property="article:tag" content="爬虫">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://xiaolinprivatenet.xyz/2022/06/04/%E7%88%AC%E8%99%AB%E5%B0%8F%E7%BB%83%E4%B9%A0-%E6%B4%9B%E8%B0%B7%E9%A2%98%E5%BA%93%E7%88%AC%E5%8F%96/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>爬虫小练习--洛谷题库爬取 | Lin's Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Lin's Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">小霖的博客</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://xiaolinprivatenet.xyz/2022/06/04/%E7%88%AC%E8%99%AB%E5%B0%8F%E7%BB%83%E4%B9%A0-%E6%B4%9B%E8%B0%B7%E9%A2%98%E5%BA%93%E7%88%AC%E5%8F%96/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="记录学习日常">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Lin's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          爬虫小练习--洛谷题库爬取
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2022-06-04 15:01:25 / 修改时间：18:31:10" itemprop="dateCreated datePublished" datetime="2022-06-04T15:01:25+08:00">2022-06-04</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/python/" itemprop="url" rel="index"><span itemprop="name">python</span></a>
+                </span>
+            </span>
+
+          
+            <div class="post-description">爬虫是一个有趣的工具，我通过爬虫的学习，接触了网络编程，也对python有了更好的了解。</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h3 id="简述"><a href="#简述" class="headerlink" title="简述"></a>简述</h3><p>爬虫的实质就是发送请求与接收请求，并围绕这一方面进行处理。爬虫的困难在于对应对方的各种反爬措施，由于我们是入门练手，不对这方面过多描述。</p>
+<p>我刚开始学习的时候有一种错误理解就是只有python才能写爬虫，但后来随着学习的深入，才明白只要能发送和接收请求就能写爬虫，语言并不重要，而python出名是由于它优秀的第三方库，使得他对这一过程进行了很好的简化。</p>
+<h3 id="环境选择"><a href="#环境选择" class="headerlink" title="环境选择"></a>环境选择</h3><p>在正式进行练习前，我们需要对python环境进行配置，由于网上有许多资源，我在这里不做概述了，我说说对开发工具的选择。</p>
+<p>python的开发工具我常用pycharm，vscode。我推荐新手直接用pycharm，vscode配环境比较麻烦，对新手不太友好，而且python中我们常用虚拟环境，pycharm可以建立项目直接进入虚拟环境，vscode则需要自己进行一些配置比较麻烦。简单来说，pycharm开箱即用，vscode则是更轻量，如何选择看个人喜好。</p>
+<h3 id="搭建项目"><a href="#搭建项目" class="headerlink" title="搭建项目"></a>搭建项目</h3><p>为了简化学习难度，我们就简单使用requests进行爬取，对于网页解析，我们使用正则表达式即可（复杂网站我们一般使用解析库如bs4）。<br>我们新建一个pycharm的项目进入后，先要安装requests包。</p>
+<p>在pycharm中我们不要去使用终端pip下载，而是使用下方的python package进行安装。因为pip下载到全局环境，而我们项目使用的是虚拟环境，如果想要用pip下载你需要先打开虚拟环境。</p>
+<h3 id="分析网页"><a href="#分析网页" class="headerlink" title="分析网页"></a>分析网页</h3><p>爬虫中最重要的一步是分析目标的url，在这里我们打开洛谷网站</p>
+<p><code>https://www.luogu.com.cn/</code></p>
+<p>我们进入了洛谷网站首页，然后我们打开他的题库，我们发现他的url变成了这样</p>
+<p><code>https://www.luogu.com.cn/problem/list</code></p>
+<p> 我们发现他的网址多了<code>problem/list</code>，来定位到他的题库页</p>
+<p> 我们随机点开一道题，我这里就点开了他的第一题P1000超级马里奥,我们发现他的url变成了<code>https://www.luogu.com.cn/problem/P1000</code></p>
+<p> 我们猜测他的题目与后面那个<code>/p1000</code>这个参数有关，于是我们尝试改变它为<br> <code>https://www.luogu.com.cn/problem/P1001</code>，然后在浏览器中输入该url。</p>
+<p> 结果很amazing啊，我们进入了P1001题，我们这时就确定了洛谷是由题号来搜索题库的,于是我们分解url</p>
+<p> <code>https://www.luogu.com.cn/problem/(题号)</code></p>
+<p>然后我们就能开始爬取了。</p>
+<h3 id="爬取"><a href="#爬取" class="headerlink" title="爬取"></a>爬取</h3><p> 先导入包：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">import requests</span><br></pre></td></tr></table></figure>
+<p>然后我们简单测试一下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br></pre></td><td class="code"><pre><span class="line">basicUrl=&#x27;https://www.luogu.com.cn/problem/&#x27;</span><br><span class="line">problemId=&#x27;P&#123;&#125;&#x27;</span><br><span class="line">testProblemID=&#x27;https://www.luogu.com.cn/problem/P1000&#x27;</span><br><span class="line">headers = &#123;</span><br><span class="line">    &#x27;User-Agent&#x27;: &#x27;Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.81 Safari/537.36&#x27;</span><br><span class="line">&#125;#我们对请求头进行伪装</span><br><span class="line"></span><br><span class="line">response=requests.get(testProblemID,headers=headers)</span><br><span class="line">print(response.content)</span><br><span class="line"></span><br><span class="line">输出结果</span><br><span class="line">&#x27;&#x27;&#x27;</span><br><span class="line">&lt;!DOCTYPE html&gt;</span><br><span class="line">&lt;html class=&quot;no-js&quot; lang=&quot;zh&quot;&gt;</span><br><span class="line">&lt;head&gt;</span><br><span class="line">&lt;meta charset=&quot;utf-8&quot;&gt;</span><br><span class="line">&lt;meta http-equiv=&quot;X-UA-Compatible&quot; content=&quot;IE=edge&quot;&gt;</span><br><span class="line">&lt;title&gt;超级玛丽游戏 - 洛谷&lt;/title&gt;</span><br><span class="line">&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no&quot;&gt;</span><br><span class="line">&lt;meta name=&quot;renderer&quot; content=&quot;webkit&quot;&gt;</span><br><span class="line">&lt;meta name=&quot;csrf-token&quot; content=&quot;1654419422:S1jZQni0ql/Lj+MRsq4XlY1pkzauWtXMLvuyn7Avg60=&quot;&gt;</span><br><span class="line">&lt;meta http-equiv=&quot;Content-Security-Policy&quot; content=&quot;default-src &#x27;unsafe-inline&#x27; luogu.com.cn *.luogu.com.cn luogu.org *.luogu.org *.cnzz.com luoguprivate.oss-cn-hangzhou.aliyuncs.com luogu.oss-cn-hangzhou.aliyuncs.com wss: blob:; img-src * data:; font-src * data:; frame-src https://player.bilibili.com https://www.bilibili.com&quot;&gt;</span><br><span class="line">&lt;link rel=&quot;shortcut icon&quot; type=&quot;image/x-icon&quot; href=&quot;/favicon.ico&quot; media=&quot;screen&quot;/&gt;</span><br><span class="line">&lt;link rel=&quot;stylesheet&quot; href=&quot;https://cdn.luogu.com.cn/fe/loader.css?ver=20220526&quot;&gt;</span><br><span class="line"></span><br><span class="line">......</span><br><span class="line">......</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">&lt;body&gt;</span><br><span class="line">&lt;div id=&quot;app&quot;&gt;</span><br><span class="line">&lt;div class=&quot;lg-container&quot;&gt;</span><br><span class="line">&lt;article&gt;</span><br><span class="line">&lt;h1&gt;超级玛丽游戏&lt;/h1&gt;</span><br><span class="line">&lt;h2&gt;题目背景&lt;/h2&gt;</span><br><span class="line">&lt;div&gt;本题是洛谷的试机题目，可以帮助了解洛谷的使用。</span><br><span class="line">建议完成本题目后继续尝试[P1001](/problem/P1001)、[P1008](/problem/P1008)。</span><br><span class="line">另外强烈推荐[新用户必读贴](/discuss/show/241461)</span><br><span class="line">&lt;/div&gt;</span><br><span class="line">&lt;h2&gt;题目描述&lt;/h2&gt;</span><br><span class="line">&lt;div&gt;超级玛丽是一个非常经典的游戏。请你用字符画的形式输出超级玛丽中的一个场景。</span><br><span class="line">\`\`\`</span><br><span class="line">********</span><br><span class="line">************</span><br><span class="line">####....#.</span><br><span class="line">#..###.....##....</span><br><span class="line">###.......###### ### ###</span><br><span class="line">........... #...# #...#</span><br><span class="line">##*####### #.#.# #.#.#</span><br><span class="line">####*******###### #.#.# #.#.#</span><br><span class="line">...#***.****.*###.... #...# #...#</span><br><span class="line">....**********##..... ### ###</span><br><span class="line">....**** *****....</span><br><span class="line">#### ####</span><br><span class="line">###### ######</span><br><span class="line">##############################################################</span><br><span class="line">#...#......#.##...#......#.##...#......#.##------------------#</span><br><span class="line">###########################################------------------#</span><br><span class="line">#..#....#....##..#....#....##..#....#....#####################</span><br><span class="line">########################################## #----------#</span><br><span class="line">#.....#......##.....#......##.....#......# #----------#</span><br><span class="line">########################################## #----------#</span><br><span class="line">#.#..#....#..##.#..#....#..##.#..#....#..# #----------#</span><br><span class="line">########################################## ############</span><br><span class="line">\`\`\`&lt;/div&gt;</span><br><span class="line">&lt;h2&gt;输入输出格式&lt;/h2&gt;</span><br><span class="line">&lt;h3&gt;输入格式&lt;/h3&gt;</span><br><span class="line">&lt;br /&gt;</span><br><span class="line">&lt;div&gt;无&lt;/div&gt;</span><br><span class="line">&lt;h3&gt;输出格式&lt;/h3&gt;</span><br><span class="line">&lt;br /&gt;</span><br><span class="line">&lt;div&gt;如描述&lt;/div&gt;</span><br><span class="line">&lt;h2&gt;输入输出样例&lt;/h2&gt;</span><br><span class="line">&lt;i&gt;暂无测试点&lt;/i&gt;</span><br><span class="line">&lt;h2&gt;说明&lt;/h2&gt;</span><br><span class="line">&lt;div&gt;**广告**</span><br><span class="line">洛谷出品的算法教材，帮助您更简单的学习基础算法。[【官方网店绝赞热卖中！】&amp;gt;&amp;gt;&amp;gt;](https://item.taobao.com/item.htm?id=637730514783)</span><br><span class="line">[![](https://cdn.luogu.com.cn/upload/image_hosting/njc7dlng.png)](https://item.taobao.com/item.htm?id=637730514783)&lt;/div&gt;</span><br><span class="line">&lt;/article&gt;</span><br><span class="line">&lt;/div&gt;</span><br><span class="line">&lt;/div&gt;</span><br><span class="line">&lt;/body&gt;</span><br><span class="line">&lt;/html&gt;</span><br><span class="line">&#x27;&#x27;&#x27;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>我们可以将结果存储为html文件用浏览器打开，然后可以看见我们已经爬下来该网页（页面展示不同是因为没有css等样式文件，数据是相同的）</p>
+<p>然后我们返回到洛谷题库页面，翻到最后一页，确定最大题号为8381</p>
+<p>然后我们能这样爬取所有题目：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">first=1000</span><br><span class="line">last=8381</span><br><span class="line">for i in range(first,last+1):</span><br><span class="line">    url=basicUrl+problemId.format(i)</span><br><span class="line">    response=requests.get(url=url,headers=headers)</span><br><span class="line">    print(response.text)</span><br></pre></td></tr></table></figure>
+
+
+<h3 id="数据解析"><a href="#数据解析" class="headerlink" title="数据解析"></a>数据解析</h3><p>上面我们已经看到了我们爬取了相关页面的html文件，接下来我们需要对其进行解析。<br>我们可以看到洛谷题目的页面十分简单，直接使用正则表达式就可以对其进行提取。<br>给出简单示例：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">def parse(html):</span><br><span class="line">    describle_partten = re.compile(&#x27;&lt;h2&gt;题目描述&lt;/h2&gt;\s&lt;div&gt;(.*?)&lt;/div&gt;&#x27;, re.S)</span><br><span class="line">    problem_describle = re.search(describle_partten, html)</span><br><span class="line">    inputForm_partten = re.compile(&#x27;&lt;h3&gt;输入格式&lt;/h3&gt;\s&lt;br /&gt;\s&lt;div&gt;(.*?)&lt;/div&gt;&#x27;, re.S)</span><br><span class="line">    problem_inputform = re.search(inputForm_partten, html)</span><br><span class="line">    outputForm_partten = re.compile(&#x27;&lt;h3&gt;输出格式&lt;/h3&gt;\s&lt;br /&gt;\s&lt;div&gt;(.*?)&lt;/div&gt;&#x27;, re.S)</span><br><span class="line">    problem_outputform = re.search(outputForm_partten, html)</span><br><span class="line">    problem_input_pattern = re.compile(&#x27;&lt;h3&gt;输入样例 #1&lt;/h3&gt;\s&lt;pre&gt;&lt;code&gt;(.*?)&lt;/code&gt;&lt;/pre&gt;&#x27;, re.S)</span><br><span class="line">    problem_input = re.search(problem_input_pattern, html)</span><br><span class="line">    problem_output_partten = re.compile(&#x27;&lt;h3&gt;输出样例 #1&lt;/h3&gt;\s&lt;pre&gt;&lt;code&gt;(.*?)&lt;/code&gt;&lt;/pre&gt;&#x27;, re.S)</span><br><span class="line">    problem_output = re.search(problem_output_partten, html)</span><br><span class="line">    res=&#x27;\n&#x27;.join([problem_describle.group(1),problem_inputform.group(1),problem_outputform.group(1),problem_input.group(1),problem_output.group(1)])</span><br><span class="line">    print(res)</span><br><span class="line"></span><br><span class="line">#这里不要用P1000的题目，会报错异常，因为他没有那个题目没有输入输出，正常遇见这种情况就需要我们对异常进行处理，不过这里为简便我就不写了。</span><br><span class="line">parse(response.text)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>然后你就可以把这些数据存储为自己想要的格式</p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>这是一个入门的教程，实际上我们要做爬虫时需要考虑更多的东西，例如url分析往往不是这么简单，页面结构也更加复杂，也要处理各种异常防止程序中断，如何断点重新加载，应对对方的反爬措施等等。</p>
+<p>第一篇博客，也是因为有个朋友想要了解python相关的学习，于是简单写了一个教程。算是一个好的起步吧，加油！</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/python/" rel="tag"># python</a>
+              <a href="/tags/%E7%88%AC%E8%99%AB/" rel="tag"># 爬虫</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2022/06/03/The-Great-Gatsby-1-1/" rel="prev" title="The-Great-Gatsby-1-1">
+      <i class="fa fa-chevron-left"></i> The-Great-Gatsby-1-1
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AE%80%E8%BF%B0"><span class="nav-number">1.</span> <span class="nav-text">简述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%8E%AF%E5%A2%83%E9%80%89%E6%8B%A9"><span class="nav-number">2.</span> <span class="nav-text">环境选择</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%90%AD%E5%BB%BA%E9%A1%B9%E7%9B%AE"><span class="nav-number">3.</span> <span class="nav-text">搭建项目</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%86%E6%9E%90%E7%BD%91%E9%A1%B5"><span class="nav-number">4.</span> <span class="nav-text">分析网页</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%88%AC%E5%8F%96"><span class="nav-number">5.</span> <span class="nav-text">爬取</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E8%A7%A3%E6%9E%90"><span class="nav-number">6.</span> <span class="nav-text">数据解析</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">7.</span> <span class="nav-text">总结</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name"></p>
+  <div class="site-description" itemprop="description">记录学习日常</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">3</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder"></span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
