@@ -218,10 +218,10 @@
 
       
         <h3 id="简单介绍"><a href="#简单介绍" class="headerlink" title="简单介绍"></a>简单介绍</h3><p>搭建个人博客并不需要关于很多知识，在各种工具的帮助下，一个熟练的人几分钟就能搭好一个博客。但对于初学者来说这也确实是个比较困难的挑战。<br>我介绍一下最简单的搭建方式。在此之前，我也说说一些简单的知识，希望能更好的帮助你搭建网站。</p>
-<h3 id="计网小知识"><a href="#计网小知识" class="headerlink" title="计网小知识"></a>计网小知识</h3><p>web应用是属于C&#x2F;S架构，也就是所谓的客户机（client）服务器（server）架构。我们所使用的上网的设备就是客户机。我们访问网站就需要去一个地方获取网页资源，这个地方就是服务器。这一个过程是一个信息交流的过程。</p>
+<h3 id="计网小知识"><a href="#计网小知识" class="headerlink" title="计网小知识"></a>计网小知识</h3><p>web应用是属于C/S架构，也就是所谓的客户机（client）服务器（server）架构。我们所使用的上网的设备就是客户机。我们访问网站就需要去一个地方获取网页资源，这个地方就是服务器。这一个过程是一个信息交流的过程。</p>
 <p>我们在不同地方的两个设备如何才能进行交流？那肯定需要找到对方在哪才能进行沟通。ip就是代表了一种地址，标识设备在网络中的位置。</p>
 <p>我们知道一个网站会有很多人访问，所以必须每个人都能找到它，那么他的ip地址就不能变化，而客户机向服务器发送请求时会包含客户机自己的ip地址，所以客户机的ip地址变化也不妨碍服务器找到它，所以客户端的ip是可以变化的。ip地址能否变化，也是客户机与服务器的一大区别。</p>
-<p>当我们找到服务器在网络上的位置时，我们要与服务器进行交流，这种交流需要被解析，而这需要客户端软件–浏览器与服务器软件–nginx，apache.</p>
+<p>当我们找到服务器在网络上的位置时，我们要与服务器进行交流，这种交流需要被解析，而这需要客户端软件—浏览器与服务器软件—nginx，apache.</p>
 <h3 id="配置博客"><a href="#配置博客" class="headerlink" title="配置博客"></a>配置博客</h3><p>我们从上面知道了要搭建一个web网站，我们需要一台服务器。我们可以选择腾讯云服务器，学生优惠一年100左右，也很便宜。</p>
 <p>买服务器时选择linux系统，其他的按照正常流程走就好。</p>
 <p>买好后，进入云服务器的控制界面（直接搜索云服务器就有）然后进入你创建的实例，右上角多选重装系统，选择应用镜像wordpress，重装系统，然后就可以在浏览器上输入你的服务器ip就能访问博客啦。</p>
@@ -326,20 +326,20 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">5</span>
+          <span class="site-state-item-count">6</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-count">5</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-count">9</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -423,6 +423,61 @@
 
 
   
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
 
   
 
